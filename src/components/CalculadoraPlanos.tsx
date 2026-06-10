@@ -26,7 +26,6 @@ const PERIODOS: { id: Periodo; label: string; meses: number; descontoMes: number
 ]
 
 function fmt(v: number) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }
-function fmtM(v: number) { return v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }
 
 export default function CalculadoraPlanos() {
   const [planoSel, setPlanoSel] = useState<string | null>(null)
