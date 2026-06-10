@@ -13,7 +13,7 @@ const META_JUNHO = 258
 
 export default function App() {
   const [tab, setTab] = useState<Tab>('meta')
-  const { meta, loading, error, reload, addNewLead, moveLead, editLead, removeLead, saveMeta, leadsOf, eqlsOf } = useLeads()
+  const { meta, error, addNewLead, moveLead, editLead, removeLead, saveMeta, leadsOf, eqlsOf } = useLeads()
 
   const oppsOf = (sdr: 'Gabrielly' | 'Thais') =>
     leadsOf(sdr).filter(l => l.status === 'opp' || l.status === 'ganho').length
