@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import { BarChart3, MessageSquare, Tag, AlertCircle, Trophy, TrendingUp, Zap } from 'lucide-react'
+import { BarChart3, MessageSquare, Tag, AlertCircle, Trophy, TrendingUp, Zap, Calculator } from 'lucide-react'
 import { useLeads } from './hooks/useLeads'
 import MetaHeader from './components/MetaHeader'
 import CarteiraSdr from './components/CarteiraSdr'
 import MensagensSequencia from './components/MensagensSequencia'
 import TabelaDescontos from './components/TabelaDescontos'
+import CalculadoraPlanos from './components/CalculadoraPlanos'
 import { usePipedriveGanhos } from './hooks/usePipedrive'
 
-type Tab = 'meta' | 'gabrielly' | 'thais' | 'mensagens' | 'descontos'
+type Tab = 'meta' | 'gabrielly' | 'thais' | 'mensagens' | 'descontos' | 'calculadora'
 
 const META_JUNHO = 258
 
@@ -124,6 +125,12 @@ export default function App() {
             active={tab === 'descontos'}
             onClick={() => setTab('descontos')}
           />
+          <NavItem
+            icon={<Calculator className="h-4 w-4" />}
+            label="Calculadora"
+            active={tab === 'calculadora'}
+            onClick={() => setTab('calculadora')}
+          />
         </nav>
 
         {/* Footer stats */}
@@ -190,6 +197,7 @@ export default function App() {
             )}
             {tab === 'mensagens' && <MensagensSequencia />}
             {tab === 'descontos' && <TabelaDescontos />}
+            {tab === 'calculadora' && <CalculadoraPlanos />}
           </div>
         </main>
       </div>
