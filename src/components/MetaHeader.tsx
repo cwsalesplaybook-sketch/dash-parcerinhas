@@ -136,7 +136,7 @@ function SdrCard({ nome, foto, eqls, opps, ganhos, receita, metaInd, pipedriveDe
     <div className="cw-card p-5">
       {/* Header do card */}
       <div className="flex items-center gap-4 mb-4">
-        <img src={foto} alt={nome} className="h-16 w-16 rounded-2xl object-cover object-top shadow-md shrink-0" />
+        <img src={foto} alt={nome} className="h-16 w-16 rounded-2xl object-cover shadow-md shrink-0" style={{ objectPosition: nome === 'Thais' ? 'center 20%' : 'center top' }} />
         <div className="flex-1">
           <p className="text-[10px] font-black uppercase tracking-widest text-cw-muted mb-0.5">SDR · Tier Agência</p>
           <p className="text-xl font-black text-cw-text">{nome}</p>

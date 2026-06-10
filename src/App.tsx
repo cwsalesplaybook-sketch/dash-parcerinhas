@@ -230,7 +230,7 @@ function SdrNavCard({ nome, foto, eqls, opps, ganhos, metaInd, active, onClick }
     >
       <div className="flex items-center gap-3 mb-2.5">
         <div className="relative shrink-0">
-          <img src={foto} alt={nome} className="h-9 w-9 rounded-xl object-cover object-top" />
+          <img src={foto} alt={nome} className="h-9 w-9 rounded-xl object-cover" style={{ objectPosition: nome === 'Thais' ? 'center 20%' : 'center top' }} />
           {active && (
             <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-cw-purple border-2 border-[#20092F]" />
           )}
