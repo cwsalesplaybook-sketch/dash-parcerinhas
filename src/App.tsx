@@ -91,7 +91,7 @@ export default function App() {
             foto="/gabrielly.jpg"
             eqls={eqlsOf('Gabrielly')}
             opps={oppsOf('Gabrielly')}
-            ganhos={ganhosOf('Gabrielly')}
+            ganhos={pipedrive.hasToken ? pipedrive.deGabrielly.length : ganhosOf('Gabrielly')}
             metaInd={Math.round(META_JUNHO / 2)}
             active={tab === 'gabrielly'}
             onClick={() => setTab('gabrielly')}
@@ -103,7 +103,7 @@ export default function App() {
             foto="/thais.jpg"
             eqls={eqlsOf('Thais')}
             opps={oppsOf('Thais')}
-            ganhos={ganhosOf('Thais')}
+            ganhos={pipedrive.hasToken ? pipedrive.deThais.length : ganhosOf('Thais')}
             metaInd={Math.round(META_JUNHO / 2)}
             active={tab === 'thais'}
             onClick={() => setTab('thais')}
