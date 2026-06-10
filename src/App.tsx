@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BarChart3, MessageSquare, Tag, RefreshCw, AlertCircle, Trophy, TrendingUp, Zap } from 'lucide-react'
+import { BarChart3, MessageSquare, Tag, AlertCircle, Trophy, TrendingUp, Zap } from 'lucide-react'
 import { useLeads } from './hooks/useLeads'
 import MetaHeader from './components/MetaHeader'
 import CarteiraSdr from './components/CarteiraSdr'
@@ -30,14 +30,6 @@ export default function App() {
   const totalGanhos = pipedrive.hasToken ? pipedrive.total : ganhosOf('Gabrielly') + ganhosOf('Thais')
   const totalReceita = pipedrive.hasToken ? pipedrive.receitaTotal : receitaOf('Gabrielly') + receitaOf('Thais')
   const pct = Math.min(100, Math.round((totalEqls / META_JUNHO) * 100))
-
-  const pageTitle = {
-    meta: 'Meta Junho 2026',
-    gabrielly: 'Carteira · Gabrielly',
-    thais: 'Carteira · Thais',
-    mensagens: 'Mensagens da Sequência',
-    descontos: 'Tabela de Descontos',
-  }[tab]
 
   return (
     <div className="flex h-screen bg-cw-bg overflow-hidden">
@@ -165,19 +157,6 @@ export default function App() {
 
       {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Topbar */}
-        <div className="bg-cw-surface border-b border-cw-border px-6 py-3 flex items-center justify-between shrink-0">
-          <h1 className="text-sm font-black text-cw-text">{pageTitle}</h1>
-          <button
-            onClick={reload}
-            disabled={loading}
-            className="flex items-center gap-1.5 text-xs text-cw-muted hover:text-cw-purple transition-colors disabled:opacity-40"
-          >
-            <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
-            {loading ? 'Carregando...' : 'Atualizar'}
-          </button>
-        </div>
-
         {/* Content */}
         <main className="flex-1 overflow-y-auto p-6">
           {error && (
@@ -187,7 +166,7 @@ export default function App() {
             </div>
           )}
 
-          <div className="max-w-5xl">
+          <div className="w-full">
             {tab === 'meta' && (
               <MetaHeader
                 meta={meta}
