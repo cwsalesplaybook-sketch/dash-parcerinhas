@@ -5,6 +5,7 @@ import MetaHeader from './components/MetaHeader'
 import CarteiraSdr from './components/CarteiraSdr'
 import MensagensSequencia from './components/MensagensSequencia'
 import TabelaDescontos from './components/TabelaDescontos'
+import PipedriveGanhos from './components/PipedriveGanhos'
 
 type Tab = 'meta' | 'gabrielly' | 'thais' | 'mensagens' | 'descontos'
 
@@ -194,6 +195,7 @@ export default function App() {
 
           <div className="max-w-5xl">
             {tab === 'meta' && (
+              <div className="space-y-6">
               <MetaHeader
                 meta={meta}
                 eqlsGabrielly={eqlsOf('Gabrielly')} eqlsThais={eqlsOf('Thais')}
@@ -202,6 +204,8 @@ export default function App() {
                 receitaGabrielly={receitaOf('Gabrielly')} receitaThais={receitaOf('Thais')}
                 onSave={saveMeta}
               />
+              <PipedriveGanhos />
+              </div>
             )}
             {tab === 'gabrielly' && (
               <CarteiraSdr sdr="Gabrielly" leads={leadsOf('Gabrielly')} onAdd={addNewLead} onMove={moveLead} onEdit={editLead} onDelete={removeLead} />
