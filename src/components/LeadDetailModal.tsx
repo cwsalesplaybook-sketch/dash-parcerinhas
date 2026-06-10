@@ -18,11 +18,18 @@ function applyVars(text: string, lead: Lead) {
     .replace(/\{\{onParceiro\}\}/g, lead.parceiro || 'nosso parceiro')
 }
 
+function fmt(v: number) { return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) }
+
 export default function LeadDetailModal({ lead, onClose, onMove, onEdit, onDelete }: Props) {
   const [copied, setCopied] = useState<string|null>(null)
   const [editObs, setEditObs] = useState(lead.observacao)
   const [savingObs, setSavingObs] = useState(false)
   const [confirmDel, setConfirmDel] = useState(false)
+  // Para marcar como Ganho
+  const [showGanhoForm, setShowGanhoForm] = useState(false)
+  const [valor, setValor] = useState(lead.valor?.toString() ?? '')
+  const [plano, setPlano] = useState(lead.plano ?? '')
+  const [periodo, setPeriodo] = useState(lead.periodo ?? '')
 
   const diaNum = lead.status.startsWith('dia') ? parseInt(lead.status.replace('dia','')) : null
   const msgData = diaNum ? SEQUENCIA[diaNum-1] : null
@@ -31,7 +38,14 @@ export default function LeadDetailModal({ lead, onClose, onMove, onEdit, onDelet
     await navigator.clipboard.writeText(applyVars(text, lead))
     setCopied(key); setTimeout(() => setCopied(null), 2000)
   }
-  async function handleMove(status: LeadStatus) { await onMove(lead.id, status); onClose() }
+  async function handleMove(status: LeadStatus) {
+    if (status === 'ganho') { setShowGanhoForm(true); return }
+    await onMove(lead.id, status); onClose()
+  }
+  async function confirmarGanho() {
+    await onEdit({ ...lead, status: 'ganho', valor: Number(valor) || 0, plano, periodo })
+    onClose()
+  }
   async function saveObs() { setSavingObs(true); await onEdit({...lead, observacao: editObs}); setSavingObs(false) }
   async function handleDelete() { await onDelete(lead.id); onClose() }
 
@@ -43,9 +57,13 @@ export default function LeadDetailModal({ lead, onClose, onMove, onEdit, onDelet
           <div>
             <p className="text-xs text-cw-muted">{lead.empresa}{lead.parceiro ? ` · via ${lead.parceiro}` : ''}</p>
             <h2 className="text-xl font-black text-cw-text">{lead.nome}</h2>
-            <div className="flex items-center gap-2 mt-1.5">
+            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
               <span className={`badge-dia ${STATUS_COLOR[lead.status]}`}>{STATUS_LABEL[lead.status]}</span>
               {lead.telefone && <span className="text-xs text-cw-muted">{lead.telefone}</span>}
+              {lead.status === 'ganho' && lead.valor && (
+                <span className="text-xs font-black text-green-600 bg-green-50 border border-green-200 px-2 py-0.5 rounded-full">{fmt(lead.valor)}</span>
+              )}
+              {lead.plano && <span className="text-xs text-cw-muted">Plano {lead.plano} · {lead.periodo}</span>}
             </div>
           </div>
           <button onClick={onClose} className="h-8 w-8 rounded-lg hover:bg-cw-elevated flex items-center justify-center text-cw-muted shrink-0">
@@ -54,23 +72,60 @@ export default function LeadDetailModal({ lead, onClose, onMove, onEdit, onDelet
         </div>
 
         <div className="p-6 space-y-6">
-          {/* Mover status */}
-          <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-cw-muted mb-3">Atualizar status</p>
-            <div className="flex flex-wrap gap-2">
-              {STATUS_ORDER.filter(s => s !== lead.status).map(s => (
-                <button key={s} onClick={() => handleMove(s)} className={`badge-dia ${STATUS_COLOR[s]} hover:opacity-80 cursor-pointer transition-opacity`}>
-                  {STATUS_LABEL[s]}
-                </button>
-              ))}
+          {/* Form de Ganho */}
+          {showGanhoForm && (
+            <div className="rounded-xl bg-yellow-50 border border-yellow-200 p-4 space-y-3">
+              <p className="text-sm font-black text-yellow-800">Registrar Ganho</p>
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-yellow-700 block mb-1">Valor (R$)</label>
+                  <input type="number" value={valor} onChange={e => setValor(e.target.value)} placeholder="0,00"
+                    className="w-full bg-white border border-yellow-300 rounded-lg px-2.5 py-2 text-sm font-bold text-cw-text focus:outline-none focus:border-yellow-500" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-yellow-700 block mb-1">Plano</label>
+                  <select value={plano} onChange={e => setPlano(e.target.value)}
+                    className="w-full bg-white border border-yellow-300 rounded-lg px-2.5 py-2 text-sm text-cw-text focus:outline-none focus:border-yellow-500">
+                    <option value="">Selecione</option>
+                    {['Delivery','Mesa','Completo','Self-Service','Enterprise'].map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-yellow-700 block mb-1">Período</label>
+                  <select value={periodo} onChange={e => setPeriodo(e.target.value)}
+                    className="w-full bg-white border border-yellow-300 rounded-lg px-2.5 py-2 text-sm text-cw-text focus:outline-none focus:border-yellow-500">
+                    <option value="">Selecione</option>
+                    {['Mensal','Trimestral','Semestral','Anual'].map(p => <option key={p} value={p}>{p}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <button onClick={() => setShowGanhoForm(false)} className="flex-1 py-2 rounded-xl border border-yellow-300 text-sm text-yellow-700">Cancelar</button>
+                <button onClick={confirmarGanho} className="flex-1 py-2 rounded-xl bg-yellow-500 text-white text-sm font-bold hover:bg-yellow-600 transition-colors">Confirmar Ganho</button>
+              </div>
             </div>
-            {NEXT_STATUS[lead.status] && (
-              <button onClick={() => handleMove(NEXT_STATUS[lead.status]!)}
-                className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl gradient-primary text-white text-sm font-bold hover:opacity-90 transition-opacity">
-                Avançar para {STATUS_LABEL[NEXT_STATUS[lead.status]!]} <ChevronRight className="h-4 w-4" />
-              </button>
-            )}
-          </div>
+          )}
+
+          {/* Mover status */}
+          {!showGanhoForm && (
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-cw-muted mb-3">Atualizar status</p>
+              <div className="flex flex-wrap gap-2">
+                {STATUS_ORDER.filter(s => s !== lead.status).map(s => (
+                  <button key={s} onClick={() => handleMove(s)} className={`badge-dia ${STATUS_COLOR[s]} hover:opacity-80 cursor-pointer transition-opacity`}>
+                    {STATUS_LABEL[s]}
+                  </button>
+                ))}
+              </div>
+              {NEXT_STATUS[lead.status] && (
+                <button onClick={() => handleMove(NEXT_STATUS[lead.status]!)}
+                  className="mt-3 w-full flex items-center justify-center gap-2 py-2.5 rounded-xl gradient-primary text-white text-sm font-bold hover:opacity-90 transition-opacity">
+                  {NEXT_STATUS[lead.status] === 'ganho' ? '🏆 Marcar como Ganho' : `Avançar para ${STATUS_LABEL[NEXT_STATUS[lead.status]!]}`}
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Mensagens do dia */}
           {msgData && (
@@ -91,7 +146,7 @@ export default function LeadDetailModal({ lead, onClose, onMove, onEdit, onDelet
                 <div key={key} className="mb-3">
                   <div className="flex items-center justify-between mb-1.5">
                     <p className="text-[10px] font-bold uppercase tracking-widest text-cw-muted">{label}</p>
-                    <button onClick={() => copy(text, key)} className="flex items-center gap-1 text-[10px] text-cw-purple hover:text-cw-purple-dark transition-colors font-bold">
+                    <button onClick={() => copy(text, key)} className="flex items-center gap-1 text-[10px] text-cw-purple hover:text-cw-purple-dark font-bold transition-colors">
                       {copied === key ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                       {copied === key ? 'Copiado!' : 'Copiar'}
                     </button>
@@ -107,13 +162,10 @@ export default function LeadDetailModal({ lead, onClose, onMove, onEdit, onDelet
           {/* Observação */}
           <div>
             <p className="text-[10px] font-bold uppercase tracking-widest text-cw-muted mb-2">Observação</p>
-            <textarea
-              className="w-full bg-cw-bg border border-cw-border rounded-xl px-3 py-2.5 text-sm text-cw-text focus:outline-none focus:border-cw-purple resize-none placeholder:text-cw-muted/40 transition-colors"
-              rows={3} value={editObs} onChange={e => setEditObs(e.target.value)} placeholder="Anotações..."
-            />
+            <textarea className="w-full bg-cw-bg border border-cw-border rounded-xl px-3 py-2.5 text-sm text-cw-text focus:outline-none focus:border-cw-purple resize-none placeholder:text-cw-muted/40 transition-colors"
+              rows={3} value={editObs} onChange={e => setEditObs(e.target.value)} placeholder="Anotações..." />
             {editObs !== lead.observacao && (
-              <button onClick={saveObs} disabled={savingObs}
-                className="mt-2 text-xs px-3 py-1.5 rounded-lg gradient-primary text-white font-bold disabled:opacity-50">
+              <button onClick={saveObs} disabled={savingObs} className="mt-2 text-xs px-3 py-1.5 rounded-lg gradient-primary text-white font-bold disabled:opacity-50">
                 {savingObs ? 'Salvando...' : 'Salvar observação'}
               </button>
             )}
