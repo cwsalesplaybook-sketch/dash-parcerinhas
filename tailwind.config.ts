@@ -4,19 +4,30 @@ export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
       colors: {
-        bg: '#0F0E17',
-        surface: '#1A1828',
-        border: '#2D2A45',
-        purple: {
-          DEFAULT: '#7C3AED',
-          light: '#A855F7',
-          dark: '#5B21B6',
+        'cw-purple':       '#A543FA',
+        'cw-purple-dark':  '#59327A',
+        'cw-red':          '#FF5959',
+        'cw-yellow':       '#FFB600',
+        'cw-bg':           '#F4EDF7',
+        'cw-surface':      '#FFFFFF',
+        'cw-elevated':     '#FAF7FC',
+        'cw-border':       '#E9DDF2',
+        'cw-text':         '#1A0A2E',
+        'cw-muted':        '#7B5EA7',
+        'cw-sidebar':      '#20092F',
+      },
+      keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: '-1000px 0' },
+          '100%': { backgroundPosition: '1000px 0' },
         },
-        text: {
-          primary: '#F4F1FF',
-          muted: '#8B859E',
-        },
+      },
+      animation: {
+        shimmer: 'shimmer 2s linear infinite',
       },
     },
   },
