@@ -5,7 +5,7 @@ import MetaHeader from './components/MetaHeader'
 import CarteiraSdr from './components/CarteiraSdr'
 import MensagensSequencia from './components/MensagensSequencia'
 import TabelaDescontos from './components/TabelaDescontos'
-import PipedriveGanhos from './components/PipedriveGanhos'
+import { usePipedriveGanhos } from './hooks/usePipedrive'
 
 type Tab = 'meta' | 'gabrielly' | 'thais' | 'mensagens' | 'descontos'
 
@@ -24,8 +24,11 @@ export default function App() {
 
   const totalEqls = eqlsOf('Gabrielly') + eqlsOf('Thais')
   const totalOpps = oppsOf('Gabrielly') + oppsOf('Thais')
-  const totalGanhos = ganhosOf('Gabrielly') + ganhosOf('Thais')
-  const totalReceita = receitaOf('Gabrielly') + receitaOf('Thais')
+
+  // Ganhos do Pipedrive
+  const pipedrive = usePipedriveGanhos()
+  const totalGanhos = pipedrive.hasToken ? pipedrive.total : ganhosOf('Gabrielly') + ganhosOf('Thais')
+  const totalReceita = pipedrive.hasToken ? pipedrive.receitaTotal : receitaOf('Gabrielly') + receitaOf('Thais')
   const pct = Math.min(100, Math.round((totalEqls / META_JUNHO) * 100))
 
   const pageTitle = {
@@ -183,29 +186,22 @@ export default function App() {
               <p className="text-xs text-red-700">{error}</p>
             </div>
           )}
-          {!import.meta.env.VITE_SHEETS_URL && (
-            <div className="mb-4 flex items-center gap-2 rounded-xl bg-cw-elevated border border-cw-border px-4 py-3">
-              <AlertCircle className="h-4 w-4 text-cw-muted shrink-0" />
-              <p className="text-xs text-cw-muted">
-                Modo offline — dados salvos no navegador. Configure{' '}
-                <code className="bg-cw-bg px-1 rounded text-cw-purple font-bold">VITE_SHEETS_URL</code> para sincronizar com Google Sheets.
-              </p>
-            </div>
-          )}
 
           <div className="max-w-5xl">
             {tab === 'meta' && (
-              <div className="space-y-6">
               <MetaHeader
                 meta={meta}
                 eqlsGabrielly={eqlsOf('Gabrielly')} eqlsThais={eqlsOf('Thais')}
                 oppsGabrielly={oppsOf('Gabrielly')} oppsThais={oppsOf('Thais')}
-                ganhosGabrielly={ganhosOf('Gabrielly')} ganhosThais={ganhosOf('Thais')}
-                receitaGabrielly={receitaOf('Gabrielly')} receitaThais={receitaOf('Thais')}
+                ganhosGabrielly={pipedrive.hasToken ? pipedrive.deGabrielly.length : ganhosOf('Gabrielly')}
+                ganhosThais={pipedrive.hasToken ? pipedrive.deThais.length : ganhosOf('Thais')}
+                receitaGabrielly={pipedrive.hasToken ? pipedrive.receitaGabrielly : receitaOf('Gabrielly')}
+                receitaThais={pipedrive.hasToken ? pipedrive.receitaThais : receitaOf('Thais')}
+                pipedriveDealsGabrielly={pipedrive.deGabrielly}
+                pipedriveDealsThais={pipedrive.deThais}
+                pipedriveLoading={pipedrive.loading}
                 onSave={saveMeta}
               />
-              <PipedriveGanhos />
-              </div>
             )}
             {tab === 'gabrielly' && (
               <CarteiraSdr sdr="Gabrielly" leads={leadsOf('Gabrielly')} onAdd={addNewLead} onMove={moveLead} onEdit={editLead} onDelete={removeLead} />
