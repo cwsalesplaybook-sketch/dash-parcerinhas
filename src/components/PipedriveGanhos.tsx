@@ -1,4 +1,4 @@
-import { RefreshCw, ExternalLink, Trophy, TrendingUp, Star, AlertCircle } from 'lucide-react'
+import { RefreshCw, ExternalLink, Trophy, Star, AlertCircle } from 'lucide-react'
 import { usePipedriveGanhos } from '../hooks/usePipedrive'
 import type { PipedriveDeal } from '../lib/pipedrive'
 
@@ -11,7 +11,7 @@ function fmtDate(s: string) {
 }
 
 export default function PipedriveGanhos() {
-  const { deals, loading, error, reload, hasToken, deGabrielly, deThais, receitaGabrielly, receitaThais, receitaTotal, total, totalParceria } = usePipedriveGanhos()
+  const { loading, error, reload, hasToken, deGabrielly, deThais, receitaGabrielly, receitaThais, receitaTotal, total, totalParceria } = usePipedriveGanhos()
 
   if (!hasToken) {
     return (
