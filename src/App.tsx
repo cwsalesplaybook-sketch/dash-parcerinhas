@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BarChart3, Users, MessageSquare, Tag, RefreshCw, AlertCircle } from 'lucide-react'
+import { BarChart3, MessageSquare, Tag, RefreshCw, AlertCircle } from 'lucide-react'
 import { useLeads } from './hooks/useLeads'
 import MetaHeader from './components/MetaHeader'
 import CarteiraSdr from './components/CarteiraSdr'
