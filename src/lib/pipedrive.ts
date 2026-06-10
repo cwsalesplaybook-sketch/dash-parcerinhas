@@ -103,8 +103,17 @@ export async function fetchWonDeals(year: number, month: number): Promise<Pipedr
     start += limit
   }
 
+  // Deduplica por ID (paginação por offset+sort pode retornar a mesma deal em páginas diferentes)
+  const seen = new Set<number>()
+  const uniqueDeals = allDeals.filter(d => {
+    const id = d.id as number
+    if (seen.has(id)) return false
+    seen.add(id)
+    return true
+  })
+
   // Filtra apenas Gabrielly e Thais
-  return allDeals
+  return uniqueDeals
     .filter(d => parseSdr(d) !== null)
     .map(mapDeal)
 }

@@ -181,8 +181,6 @@ export default function App() {
                 oppsGabrielly={oppsOf('Gabrielly')} oppsThais={oppsOf('Thais')}
                 ganhosGabrielly={pipedrive.hasToken ? pipedrive.deGabrielly.length : ganhosOf('Gabrielly')}
                 ganhosThais={pipedrive.hasToken ? pipedrive.deThais.length : ganhosOf('Thais')}
-                receitaGabrielly={pipedrive.hasToken ? pipedrive.receitaGabrielly : receitaOf('Gabrielly')}
-                receitaThais={pipedrive.hasToken ? pipedrive.receitaThais : receitaOf('Thais')}
                 pipedriveDealsGabrielly={pipedrive.deGabrielly}
                 pipedriveDealsThais={pipedrive.deThais}
                 pipedriveLoading={pipedrive.loading}

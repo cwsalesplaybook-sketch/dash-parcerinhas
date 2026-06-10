@@ -1,4 +1,4 @@
-import { TrendingUp, Trophy, ExternalLink, Zap, Target } from 'lucide-react'
+import { TrendingUp, Trophy, ExternalLink, Target } from 'lucide-react'
 import type { Meta } from '../types'
 import type { PipedriveDeal } from '../lib/pipedrive'
 
@@ -7,7 +7,6 @@ interface Props {
   eqlsGabrielly: number; eqlsThais: number
   oppsGabrielly: number; oppsThais: number
   ganhosGabrielly: number; ganhosThais: number
-  receitaGabrielly: number; receitaThais: number
   pipedriveDealsGabrielly: PipedriveDeal[]
   pipedriveDealsThais: PipedriveDeal[]
   pipedriveLoading: boolean
@@ -53,11 +52,10 @@ function CircularProgress({ pct, size = 140, stroke = 12 }: { pct: number; size?
   )
 }
 
-export default function MetaHeader({ meta: _meta, eqlsGabrielly, eqlsThais, oppsGabrielly, oppsThais, ganhosGabrielly, ganhosThais, receitaGabrielly, receitaThais, pipedriveDealsGabrielly, pipedriveDealsThais, pipedriveLoading }: Props) {
+export default function MetaHeader({ meta: _meta, eqlsGabrielly, eqlsThais, oppsGabrielly, oppsThais, ganhosGabrielly, ganhosThais, pipedriveDealsGabrielly, pipedriveDealsThais, pipedriveLoading }: Props) {
   const totalEqls = eqlsGabrielly + eqlsThais
   const totalOpps = oppsGabrielly + oppsThais
   const totalGanhos = ganhosGabrielly + ganhosThais
-  const totalReceita = receitaGabrielly + receitaThais
 
   const faltam = Math.max(0, META_JUNHO - totalEqls)
   const diasFaltando = diasUteisFaltando()
@@ -142,14 +140,6 @@ export default function MetaHeader({ meta: _meta, eqlsGabrielly, eqlsThais, opps
           color="#D97706"
           bg="bg-yellow-50"
         />
-        <StatCard
-          icon={<Zap className="h-5 w-5" />}
-          label="Receita gerada"
-          value={pipedriveLoading ? '…' : totalReceita > 0 ? fmt(totalReceita) : '—'}
-          sub={totalReceita > 0 ? 'Total acumulado' : 'Nenhuma ainda'}
-          color="#16a34a"
-          bg="bg-green-50"
-        />
       </div>
 
       {/* SDR Cards */}
@@ -157,7 +147,7 @@ export default function MetaHeader({ meta: _meta, eqlsGabrielly, eqlsThais, opps
         <SdrCard
           nome="Gabrielly" foto="/gabrielly.jpg"
           eqls={eqlsGabrielly} opps={oppsGabrielly}
-          ganhos={ganhosGabrielly} receita={receitaGabrielly}
+          ganhos={ganhosGabrielly}
           metaInd={Math.round(META_JUNHO/2)}
           pipedriveDeals={pipedriveDealsGabrielly}
           pipedriveLoading={pipedriveLoading}
@@ -165,7 +155,7 @@ export default function MetaHeader({ meta: _meta, eqlsGabrielly, eqlsThais, opps
         <SdrCard
           nome="Thais" foto="/thais.jpg"
           eqls={eqlsThais} opps={oppsThais}
-          ganhos={ganhosThais} receita={receitaThais}
+          ganhos={ganhosThais}
           metaInd={Math.round(META_JUNHO/2)}
           pipedriveDeals={pipedriveDealsThais}
           pipedriveLoading={pipedriveLoading}
@@ -192,8 +182,8 @@ function StatCard({ icon, label, value, sub, color, bg }: {
   )
 }
 
-function SdrCard({ nome, foto, eqls, opps, ganhos, receita, metaInd, pipedriveDeals, pipedriveLoading }: {
-  nome: string; foto: string; eqls: number; opps: number; ganhos: number; receita: number
+function SdrCard({ nome, foto, eqls, opps, ganhos, metaInd, pipedriveDeals, pipedriveLoading }: {
+  nome: string; foto: string; eqls: number; opps: number; ganhos: number
   metaInd: number; pipedriveDeals: PipedriveDeal[]; pipedriveLoading: boolean
 }) {
   const pct = Math.min(100, Math.round((eqls / metaInd) * 100))
@@ -242,7 +232,7 @@ function SdrCard({ nome, foto, eqls, opps, ganhos, receita, metaInd, pipedriveDe
         <p className="text-[9px] text-cw-muted mb-4">Meta: {metaInd} EQLs</p>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-2 text-center mb-4">
+        <div className="grid grid-cols-2 gap-2 text-center mb-4">
           <div className="bg-cw-bg rounded-xl p-2.5">
             <p className="text-lg font-black text-cw-purple">{opps}</p>
             <p className="text-[8px] text-cw-muted font-bold uppercase tracking-wider">Opps</p>
@@ -250,10 +240,6 @@ function SdrCard({ nome, foto, eqls, opps, ganhos, receita, metaInd, pipedriveDe
           <div className="bg-cw-bg rounded-xl p-2.5">
             <p className="text-lg font-black text-yellow-600">{pipedriveLoading ? '…' : ganhos}</p>
             <p className="text-[8px] text-cw-muted font-bold uppercase tracking-wider">Ganhos</p>
-          </div>
-          <div className="bg-cw-bg rounded-xl p-2.5">
-            <p className="text-sm font-black text-green-600">{pipedriveLoading ? '…' : receita > 0 ? fmt(receita) : '—'}</p>
-            <p className="text-[8px] text-cw-muted font-bold uppercase tracking-wider">Receita</p>
           </div>
         </div>
 
